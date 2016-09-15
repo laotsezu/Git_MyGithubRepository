@@ -26,7 +26,7 @@ class Home extends iBNC{
 		}
 	} 
 	function index(){ 
-		$this->formtaophieuthu();
+		$this->formtaophieuchi();
 	}  
 	function form(){
 		?> 
