@@ -1,0 +1,4 @@
+<Directory full-path-to/USERS>
+     Order Deny,Allow
+     Deny from All
+ </Directory>
