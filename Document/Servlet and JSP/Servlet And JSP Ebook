@@ -1,0 +1,93 @@
+﻿HEAD FIRST Servlet and JSP  
+
+
+CHƯƠNG 1:  TẠI SAO DÙNG 
+
+WEB SERVER CỦA BẠN LAMF GÌ ?
+	
+	MỘT WEB SERVER LẤY MỘT CLIENT REQUEST và TRẢ LẠI MÔT VÀI THỨ CHO CLIent 
+
+WEB CLIENT CỦA BẠN LÀM CÁI GÌ ?
+	Một web clinet cho phép người dùng request một vài thứ trên server và show cho người dùng kết quả của request . 
+	
+CLIENTS VÀ SERVERS ĐỀU BIẾT HTML VÀ HTTP 
+	HTML là ngôn ngữ nói cho trình duyệt của bạn cách để hiển thị nội dung ra cho người dùng xem 
+	HTTP là giao thức mà web client và web server giao tiếp với nhau 
+	
+CHI TIẾT MỘT CHÚT VỀ HTTP PROTOCOL 
+	
+HAI ĐIỀU MÀ MỘT MÌNH WEB SERVER KHÔNG THẾ LÀM ĐC> 
+	1.NỘI DUNG ĐỘNG
+		
+	2.LƯU TRỮ DỮ LIỆU TRÊN SERVER 
+	
+=> Giải pháp 
+	Cần Servlets hoặc CGI( CGI viết bằng Perl thì phải)
+	
+CHƯƠNG 2: TỔNG QUAN CẤP COA 
+	KIẾN TRÚC ỨNG DỤNG WEb 	
+	Servlets cần giúp: 
+	web Container : 
+		1.Một vài người phải gọi những phương thức doPost() hoặc doGet() của servlet 
+		2.Một vài người phải gửi request và nhận response từ/đến servlet 
+		3.Một vài phải quản lý sống, chết và tài nguyên của servlet.
+		
+THẾ NÀO LÀ MỘT CONTAINER ?
+	Servlets không có một phương thức main() nào cả. Chúng nằm dưới sự kiểm soát của một ứng dụng Java khác gọi là Container .
+	Tomcat là một ví dụ của một Container. Khi ứng dụng web server của bạn nhận một request cho một servlet, server sẽ không đưa cái request cho servlet của  chính nó… mà nó đưa đến cho Container mà triển khai servlet 
+	Nó là Container mà cung cấp servlet HTTP request và response và nó là Container mà gọi các phương thức của servlet 
+	
+
+
+
+SẼ THẾ NÀO NẾU BẠN CÓ JAVA NHƯNG KHÔNG CÓ servlets hoặc Container 
+
+	? Tự tạo một socket rồi ngồi mà listen() ok?
+Container MANG LẠI GÌ CHO BẠN ?
+	Chúng ta biết rằng COntainer quản lý và chạy servlet nhưng cụ thể hơn nữa là gì ?
+	1.Hỗ trợ giao tiếp 
+		Container cung cấp một cách dễ dàng cho servlet nói chuyện với web server. Bạn không phải xây dựng một ServerSocket , nghe tại một port , tạo stream… Container biết giao thức giữa web server web server và bản thân nó, để servlet của bạn không phải lo lắng một API giữa Apache web server bạn code ứng dụng web của bạn. Tất cả những gì bạn phải lo lắng đó là logic trong Servlet của bạn 
+	2.Quản lý vòng đời 
+		Container kiếm soát sống chết của servlet của bạn. Nó lo việc loading các classes , khởi tạo servlets, gọi những phương thức của servlet và làm cho servlet instances hợp lệ để GC. Với Container , bạn không phải lo lắng quá nhiều về quản lý tài nguyên . 
+	3.Hỗ trợ đa luồng 
+		Container tự động tạo một luồng Java cho mọi servlet request nó nhận. Khi servlet chạy xong phương thức dịch vụ HTTp cho cái request của client, luồng hoàn tất . Điều này không có nghĩa rằng bạn trở về vòng an toàn với các vấn đề về luồng - bạn vẫn loay hoay với những vấn đề đồng bộ. Nhưng có  server tạo và quản lý các cuồng cho nhiều request vẫn tiết kiệm cho bạn nhiều công việc hơn . 
+	4.Khai báo bảo mật 
+		Vởi một Container , bạn được sử dụng một descriptor viết bằng XML để cấu hình bảo mật mà không phải hard code nó trong servlet class code. Nghĩ về điều đó! bạn có thể quản lý và thay đổi bảo mật của bạn mà không chạm và biên dịch lại các file nguồn Java của bạn 
+	
+LÀM THẾ NÀO CONTAINER ÁNH XẠ ĐÚNG Servlet ?
+MỘT Servlet có thể có BA tên 
+	1.URL
+	2.Secret internal 
+	3.File name
+SỬ DỤNG Descriptor Deployment để ánh xạ URLs đến Servlets 
+	1. <servlet>
+		Ánh xạ tên nội bộ đến tên class đầy đủ 
+		→ <servlet-name>
+		+  <servlet-class>
+	2. <servlet-mapping> 
+		Ánh xạ tên nội bộ đến tên URL public 
+		→ <servlet-name>
+		+  <url-pattern>
+	Trong đó <servlet-name> chỉ dùng để nhận biết một <servlet> và <servlet-mapping> nào liên quan đến nhau , mục đích cuối là từ <url-pattern> để chuyển thành <servlet-class> 
+
+CHÚNG TA CÓ THỂ LÀM NHIỀU THỨ VỚI DD 
+	bao gồm : 
+		các vai trò bảo mật 
+		Các trang web lỗi 
+		Những thư viện đính kèm 
+		Khởi tạo thông tin cấu hình 
+CÁCH J2EE fit với tất cả điều này 
+	Java 2 Enterprise Ediotion là một loại super spec - nó kết hợp những kỹ thuật khác bao gồm Servlets 2.4 spec và JSP 2.0 spec . Đó là cho web Container. Nhưng J2EE spec cũng bao gồm kỹ thuật EnterPrise JavaBean 2.1, cho EJB Container . Nói cách khác web Container là cho những thành phần web(Servlets và JSPs) và EJB Container là cho những thành phần nghiệp vụ 
+	Một ứng dụng J2ee server đây đủ phải có cả một web Container và một EJB Container. Tomcat chỉ là một web Container!
+	Tomcat chi rlaf một web Container, khong phải toàn bộ J2EE application server , bởi vì Tomcat không có EJB Container 
+	
+DUMB QUESTION 
+	Q: Vậy Tomcat là một web Container độc lập? Điều này có nghĩa rằng có một EJB Container độc lập ?
+	A: 	
+CHƯƠNG 3:
+HÃY XÂY DƯNG MỘT ỨNG DỤNG WEB THỰC SỰ 
+	Bước 1: Xem lại user’s views (Những gì trình duyệt sẽ hiển thị), và kiến trúc cấp cao
+	Bước 2: Tạo môi trường phát triển mà chúng ta sẽ sử dụng cho project này 
+	Bước 3: Tạo môi trường triển khai mà sẽ sử dụng cho project này 
+	Bước 4: Thực hiện pát triển sâu và kiểm thử trên những thành phần khác nhau của ứng dụng web của chúng ta 
+	

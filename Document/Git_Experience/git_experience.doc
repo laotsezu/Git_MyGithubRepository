@@ -1,0 +1,22 @@
+Thiết lập chứng thực cá nhân 
+Tạo local repository 
+Staging Area là gì ? 
+Commit là gì ? Làm sao commit một tập tin ?
+Làm thể nào để Commit miễn là tracked ?
+Tracked là gì ? Làm sao đưa tập tin về trạng thái tracked ? 
+Cách xem log của git ? Làm thế nào show thêm được cả quá trình tương tác trong đầu ra của log?
+Cách để undo commit ?
+Đưa tập tin ra khỏi staging area ?
+Cách xem các tag? Cách tạo một annotated tag với lần commit cuối?
+Tạo tag đính kèm với một commit cụ thể ?
+Tạo branch gắn liền với một commit cụ thể(đã được tag)?
+Làm thế nào để xem cấu hình remote(phiên bản rườm rà) ?
+Làm thế nào đổi tên index của remote ?
+Cách thêm/xóa remote index/value?
+Ba cách lấy dữ liệu dựa trên remote ?
+Làm thế nào thêm một branch mới ?
+Cách chuyển con trỏ sang một branch mới?
+Những tập tin đang nằm trong staging area sẽ như nào nếu di chuyển con trỏ sang branch mới?
+Trộn dữ liệu từ một branch sang branch hiện tại ?
+Cách xóa branch ?
+

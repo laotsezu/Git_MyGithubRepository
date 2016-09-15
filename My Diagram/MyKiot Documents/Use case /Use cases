@@ -1,0 +1,68 @@
+﻿Use case bán hàng
+
+	Khách lựa chọn hàng hóa để mua
+	Người bán hàng nhập danh sách hàng
+	Người bán hàng bấm nút thanh toán
+	Client  gửi danh sách hàng hóa lên server để tiến hành thanh toán
+	Server lấy danh sách hàng hóa
+	Server tiến hành cập nhật thông tin hàng hóa trong cơ sở dữ liệu  (về số lượng)
+	Server tiến hành tạo hóa đơn và lưu trữ hóa đơn
+	server gửi kết quả về cho client 
+		Nếu thành công - gửi hóa đơn về cho client 
+		Nếu thất bại - gửi về tin nhắn báo lỗi 
+	
+Use case trả hàng 
+
+	Khách đưa hóa đơn đến cửa hàng xin trả hàng 
+	Người bán hàng nhập id hóa đơn vào và nhấn nút tìm kiếm 
+	Client gửi request lên cho server 
+	Server gửi hóa đơn về cho client 
+	Client hiển thị hóa đơn ra cho người bán hàng
+	Người bán hàng bấm nút trả hàng
+	Khách mua hàng tùy ý trả + mua thêm hàng
+	Người bán hàng tiến hành cập nhật lại danh sách hàng hóa 
+	Người bán hàng bấm thanh toán 
+	Client gửi thông tin về 
+		để update cũ
+			id của nhân viên đã tạo hóa đơn cũ 
+			tổng số tiền hàng hóa trả lại cho khách 
+			id hàng hóa + số lượng hàng hóa sau khi trả lại 
+		để thêm mới 
+			thông tin của hóa đơn như bình thường		
+		
+	Server nhận thông tin hóa đơn cũ , danh sách hàng hóa mới 
+	Server tiến hành cập nhật thông tin hàng hóa trong cơ sở dữ liệu 
+	Server tiến hành cập nhật hóa đơn cũ 
+	Server gửi kết quả về cho client 
+		Nếu thành công thì gửi hóa đơn mới về cho client 
+		Nếu thất bại thì gửi về tin nhắn báo lỗi 
+
+Use case kiếm hàng 
+	
+	Người quản lý kho nhấn nút kiểm hàng
+	Client request danh sách hàng hóa  trên server 
+	Server gửi danh sách hàng hóa về cho client 
+	Client show thông tin hàng hóa ra cho người kiếm kho 
+	Người kiểm kho tiến hành đếm hàng thủ công 
+	Nguời kiểm kho điền số lượng đếm vào client 
+	Người kiểm kho nhấn nút chấp nhận 
+	Client gửi thông tin mới lên cho server 
+	Server tiến hành cập nhật lại thông tin hàng hóa trong cơ sở dữ liệu 
+	Server tiến hành lưu tạo và lưu phiếu kiểm hàng vào cơ sở dữ liệu 
+	Server gửi kết quả về cho client 
+		Nếu htanhf công gửi phiếu về cho client 
+		Nếu thất bại thì gửi tin nhắn báo lỗi 
+Use case nhập hàng 
+	
+	Người quản lý kho nhấn nút nhập hàng 
+	Client lấy các thông tin về hàng hóa trên server về 
+	Người quản lý kho nhập thông tin hàng hóa + số lượng 
+	Người quản lý kho bấm nút hoàn tất
+	Client lấy input và gửi lên cho server
+	Server nhận thông tin hàng hóa + số lượng 
+	Server tiến hành cập nhật thông tin hàng hóa trong csdl 
+	Server tiến hành tạo phiếu nhập hàng 
+	Server gửi kết quả về cho client 
+		Nếu thành công gửi phiếu về cho client 
+		Nếu thất bại thì gửi tin nhắn báo lỗi 
+

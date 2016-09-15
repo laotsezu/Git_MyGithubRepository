@@ -1,0 +1,29 @@
+﻿Container Roles 
+	1.Hỗ trợ giao tiếp giữa web server và sevlets 
+		Container cung cấp một cách dễ dàng cho servlet nói chuyện với web server. Bạn không phải xây dựng một ServerSocket ,nghe tại một port , tạo stream… Container biết giao thức giữa web server web server và bản thân nó, để servlet của bạn không phải lo lắng một API giữa Apache web server bạn code ứng dụng web của bạn. Tất cả những gì bạn phải lo lắng đó là logic trong Servlet của bạn 
+	2.Quản lý vòng đời 
+		Container kiểm soát sống chết của servlet của bạn. Nó lo lắng việc loading các classes , khởi tạo servlets, gọi những phương thức của servlet và hỗ trợ việc thu gom rác. Với container thì bạn k cần lo lắng việc quản lý tài nguyên 
+	3.Hỗ trợ đa luồng 
+		Container tự động tạo một luồng Java cho mọi servlet request mà nó nhận. Khi servlet chạy xong phương thức dịch vụ HTTP cho request của client thì luồng hoàn tất. Điều này k có nghĩa rằng bạn không phải lo lắng về những vấn đề với luồng - bạn vẫn có thể gặp những vấn đề về an toàn luồng. Nhưng server tạo và quản lý các luồng cho nhiều request vẫn đỡ phần nào công việc cho bạn 
+	4.Khai báo bảo mật 
+		Với một Container thì bạn đc. sử dụng một Deloyment Descriptor bằng ngôn ngữ xml để cấu hình bảo mật mà không phải code cứng nó trong code servlet của bạn. Vì thế bạn có thể quản lý và thay đổi bảo mật mà không phải chạm đến code hay biên dịch lại các file nguồn java .
+
+////////////	
+ÁNH XẠ URLs đến servlets 
+	1. <servlet>
+		Ánh xạ tên nội bộ đến tên class đầy đủ 
+		→ <servlet-name>
+		+  <servlet-class>
+	2. <servlet-mapping> 
+		Ánh xạ tên nội bộ đến tên URL public 
+		→ <servlet-name>
+		+  <url-pattern>
+	Trong đó <servlet-name> đóng vai trò trung gian để ánh xạ <url-pattern> đến <servlet-class>
+
+//////////
+Các Chức Năng khác của Deployment Descriptor 
+	Vai trò bảo mật 
+	Trang web lỗi 
+	Thư viện đính kèm 
+	Khởi tạo thông tin cấu hình 
+
