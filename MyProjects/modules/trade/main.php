@@ -31,7 +31,6 @@
 			$input["bill_tien_can_tra"] = $this->r->get_int('bill_tien_can_tra','POST'); 
 			$input["bill_tien_da_tra"] = $this->r->get_int('bill_tien_da_tra','POST'); 
 
-
 			$this->check_empty($input["current_goods_ids"] );
 			$this->check_empty($input["agency_id"]);
 			$this->check_empty($input["personnel_id"]);
@@ -39,11 +38,9 @@
 			$this->check_money($input["bill_tien_da_tra"] );
 			$this->check_money($input["bill_tong_tien_hang"]);
 
-
 			$bill = $this->model("ModelTradeBill",$input,"trade");
 
 			$response = array();	
-
 			$response = $bill->payment();
 
 			echo json_encode($response);

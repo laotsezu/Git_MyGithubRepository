@@ -31,9 +31,7 @@ class Partner extends iBNC{
 			$khach_hang_input["customer_no_nan"] = $this->r->get_int("customer_no_nan","POST");
 			$khach_hang_input["customer_tong_tien_mua"] = $this->r->get_int("customer_tong_tien_mua","POST");
 			$khach_hang_input["customer_ma_so_thue"] = $this->r->get_string("customer_ma_so_thue","POST");
-
 			
-
 			$customer = $this->model("ModelPartnerCustomer",$khach_hang_input,"partner");
 
 			$response = $customer->addCustomer();

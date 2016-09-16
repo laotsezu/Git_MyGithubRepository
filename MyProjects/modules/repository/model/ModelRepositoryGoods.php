@@ -22,6 +22,17 @@
 		function getTableName(){
 			return "hang_hoa";
 		}
+		function insertNewGoods(){
+			try{
+				$this->insert();
+				$response["status"] = true;
+			}
+			catch(Exception $e){
+				$response["status"] = false;
+				$response["message"] = $e->getMessage();
+			}
+			return $response;
+		}
 		function setAmount($amount){
 			$amount_index = $this->getEnglishName()."_so_luong";
 			if(!$amount){

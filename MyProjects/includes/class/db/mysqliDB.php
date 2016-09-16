@@ -723,7 +723,7 @@ class MysqliDb
             $this->_query .= ' VALUES(';
         }
 
-        foreach ($tableData as $column => $value) {
+        foreach ($tableData as $column => $value){
             if ($isUpdate !== false)
                 $this->_query .= "`" . $column . "` = ";
 

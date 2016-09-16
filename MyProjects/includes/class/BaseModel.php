@@ -3,6 +3,7 @@
 		var $data;
 		var $data_indexes;
 		var $sql_model;
+		static $TAG = "BaseModel: ";
 		function __construct($input){
 			$this->data = $input;
 			$this->sql_model = $this->getModel($this->getTableName());
@@ -76,6 +77,10 @@
 			return $this->data_indexes;
 		}
 		function insert(){
+			if(!$this->data){
+				$this->err_message(self::$TAG."Insert Failed!, Data == null ");
+			}
+
 			$time_index = $this->getEnglishName()."_thoi_gian";
 			$last_modified_index = $this->getEnglishName()."_last_modified";
 			$status_index = $this->getEnglishName()."_status";
@@ -146,6 +151,11 @@
 		function getLastInsertId(){
 			return $this->sql_model->getLastId();
 		}
-	
+		function err_message($message){
+			$response["status"] = false;
+			$response["message"] = $message;
+
+			die(json_encode($response));
+		}
 	}
 ?>

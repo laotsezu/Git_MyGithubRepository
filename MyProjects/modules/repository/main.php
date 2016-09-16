@@ -16,8 +16,25 @@ class Repository extends iBNC{
 				$this->index();
 			}
 		} 
-		function index(){ 			
-			echo "123";
+		function themhang(){
+
+			$input["goods_ten"] = $this->r->get_string("goods_ten","POST");
+			$input["goods_nhom"] = $this->r->get_string("goods_nhom","POST");
+			$input["goods_loai"] = $this->r->get_string("goods_loai","POST");
+			$input["goods_gia_ban"] = $this->r->get_int("goods_gia_ban","POST");
+			$input["goods_gia_von"] = $this->r->get_int("goods_gia_von","POST");
+			$input["goods_so_luong"] = $this->r->get_int("goods_so_luong","POST");
+
+			$this->check_emptys(array($input["goods_ten"],$input["goods_nhom"],$input["goods_loai"]));
+			$this->check_moneys(array($input["goods_gia_ban"],$input["goods_gia_von"],$input["goods_so_luong"]));
+
+			$input["goods_status"] = $this->r->get_int("status","POST",1);
+
+			$goods = $this->model("ModelRepositoryGoods",$input,"repository");
+
+			$result = $goods->insertNewGoods();
+
+			echo json_encode($result);
 		}
 		function kiemhang(){
 			$phieu_kiem_hang["agency_id"] = $this->r->get_int("agency_id","POST");
@@ -58,14 +75,16 @@ class Repository extends iBNC{
 					$phieu_nhap_hang["agency_id"] 
 					,$phieu_nhap_hang["personnel_id"]
 					,$phieu_nhap_hang["icoupon_goods_ids"]
-				);
+				)
+			);
 
 			$this->check_moneys(
 				array(
 					$phieu_nhap_hang["icoupon_tong_tien_hang"]
 					,$phieu_nhap_hang["icoupon_tien_phai_tra"] 
 					,$phieu_nhap_hang["icoupon_tien_da_tra"] 
-				));
+				)
+			);
 
 			$icoupon = $this->model("ModelRepositoryICoupon",$phieu_nhap_hang,"repository");
 
