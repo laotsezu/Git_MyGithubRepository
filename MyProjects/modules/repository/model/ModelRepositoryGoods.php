@@ -13,6 +13,7 @@
 			,"goods_gia_ban"
 			,"goods_gia_von"
 			,"goods_so_luong"
+			,"goods_don_vi"
 			,"goods_status"
 			);
 		}
