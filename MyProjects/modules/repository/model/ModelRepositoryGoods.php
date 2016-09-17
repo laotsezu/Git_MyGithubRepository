@@ -14,6 +14,7 @@
 			,"goods_gia_von"
 			,"goods_so_luong"
 			,"goods_don_vi"
+			,"goods_icon"
 			,"goods_status"
 			);
 		}
@@ -22,6 +23,25 @@
 		}
 		function getTableName(){
 			return "hang_hoa";
+		}
+		function searchGoods($keyword,$start = 0,$limit = 10){
+			if($keyword){
+				$this->sql_model->where("goods_id",$keyword,"LIKE");
+				$this->sql_model->where("goods_ten",$keyword,"LIKE");
+			}
+
+			$result = $this->sql_model->get(null,array($start,$limit),"*");
+			
+			if($result){
+				$response["status"] = true;
+				$response["items"] = $result;
+			}
+			else{
+				$response["status"] = false;
+				$response["message"] = self::$TAG . "No result!";
+			}
+
+			return $response;
 		}
 		function insertNewGoods(){
 			try{

@@ -16,6 +16,15 @@ class Repository extends iBNC{
 				$this->index();
 			}
 		} 
+		function timkiemhang(){
+			$keyword = $this->r->get_string("q","GET");
+
+			//$this->check_emptys($keyword);
+			$goods = $this->model("ModelRepositoryGoods",null,"repository");
+			$result = $goods->searchGoods($keyword);
+
+			echo json_encode($result);
+		}
 		function themhang(){
 
 			$input["goods_ten"] = $this->r->get_string("goods_ten","POST");
@@ -24,6 +33,8 @@ class Repository extends iBNC{
 			$input["goods_gia_ban"] = $this->r->get_int("goods_gia_ban","POST");
 			$input["goods_gia_von"] = $this->r->get_int("goods_gia_von","POST");
 			$input["goods_so_luong"] = $this->r->get_int("goods_so_luong","POST");
+			$input["goods_icon"] = $this->r->get_int("goods_icon","POST");
+			$input["goods_don_vi"] = $this->r->get_int("goods_don_vi","POST");
 
 			$this->check_emptys(array($input["goods_ten"],$input["goods_nhom"],$input["goods_loai"]));
 			$this->check_moneys(array($input["goods_gia_ban"],$input["goods_gia_von"],$input["goods_so_luong"]));

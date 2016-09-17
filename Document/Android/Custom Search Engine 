@@ -1,0 +1,40 @@
+﻿TẠO MỘT GIAO DIỆN SEARCH 
+	 Khi bạn đã thêm chức năng tìm kiếm vào ứng dụng của bạn, Android giúp bạn triển khai giao diện người dùng với hoặc là search dialog mà xuất hiện tại top của cửa sổ window hoặc một search widget mà bạn có thể thêm vào layout của bạn. Cả 2 cái đó có thể cung cấp truy vấn tìm kiếm của người dùng đến một activity cụ thể trong ứng dụng của bạn. Bằng cách đó thì người dùng có thể khởi tạo một tìm kiếm từ bất kỳ activity nào mà có search diaglog hoặc widget search và hệ thống bắt đầu activity đó để thực hiện tìm kiếm và hiển thị kết quả 
+	
+Những tính năng khả dụng cho search dialog và widget bao gồm :
+	1.Tìm kiếm bằng giọng nói 
+	2.Gợi ý tìm kiems dựa trên truy vấn gần nhất 
+	3.Gợi ý tìm kiếm , phù hợp với kết quả thực sự trong dữ liệu ứng dụng 
+Hướng dẫn dưới đây cho bạn thấy cách thiết lập ứng dụng của bạn để cung cấp một giao diện tìm kiếm mà được hỗ trợ bởi hệ thoogs Android để cung cấp những truy vấn tìm kiếm sử dụng hoặc search dialog hoặc search widget 
+	
+Trước khi bạn bắt đầu, bạn nên quyết định liệu bạn sẽ triển khai giao diện tìm kiếm sử dụng search diaglog hay search idget. Cả 2 đều cung cấp những tính năng giống nhau nhưng với cách thức khá khác nhau./
+	Seach Dialog sử dụng một UI compopnent mà được kiểm soát bởi hệ thống Android. Khi activated bởi người dùng thì search dialog xuất hiện tại top của activity 
+		Hệ thống Anndroid kiểm soát tất cả các sự kiện trong search dialog. Khi người dùng submit một truy vấn, hệ thống cung cấp truy vấn đến cho activity mà bạn xác định để xử lý tìm kiếm. Dialog cung có thể cung cấp những gợi ý khi người dùng oánh. 
+	Search widget là một thể hiện của SearchView mà bạn có thể đặt bất kỳ đâu trong ayout. Theo mặc định thì search widget cư xử như một EditText widget chuẩn và không làm bất cứ điều gì nhưng bạn có thể cấu hình nó để hệ thống Android xử lý tất cả những sự kiện đầu vào , cung cấp truy vấn đến activity tương ứng và cung cấp gợi ý tìm kiếm \
+
+//
+	Khi người dùng thực thi một tìm kiếm từ search dialog hoặc search widget , hệ thống tạo một Intent và lưu trữ truy vấn của người dùng trong nó. Sau đó hệ thoongsg bắt đầu activity mà bạn khai báo để xử lý tìm kiếm. Để thiết lập ứng dụng của bạn cho loại hỗ trợ tìm kiếm này, bạn cần làm những thư ssau :
+	1.Cấu hình một searchable 
+		Một XML file mà cấu hình một vài thiết lập cho search dialog hoặc search widget. Nó bao gồm những thiết lập cho các chức năng như voice search, search suggestion và hint text cho search box 
+	2.Một searchable activity 
+		Activiity mà nhận search query  rồi đi search dữ liệu và hiển thị kết quả. 
+	3.Một giao diện tìm kiếm, cung cấp bởi hoặc là :
+		Một search dialog: theo mặc định thì search dialog là ẩn, nhưng xuất hiện tại top của màn hình khi bạn gọi onSearchRequested() 
+		Hoặc một SearchView widget : Sử dụng search widget cho phép bạn đặt search bõ anywhere trong activity của bạn. 
+///
+	Phần còn lại trong document này cho bạn thấy cách tạo một cấu hình searchable, searchable activity và triển khai một giao diện tìm kiếm với search dialog hoặc search widget 
+/?////
+TẠO MỘT CẤU HÌNH SEARCHABLE 
+	Hãy tạo thư mục xml trong thư mục res 
+	Tạo file searchable.xml 
+		→ Hệ thống sẽ sử dụng file này để khởi tạo một đối tượng SearchableInfo , nhưng đối tượng này không để khởi tạo trong runtime vì thế bạn phải khai báo nó trong file cấu hình searchable.xml 
+	Điền 2 thuộc tính android:label và android: hint 
+		Thuộc tính android:label là thuộc tính bắt buộc . Nó trỏ đến một tài nguyên string, nên là tên ứng dụng thì đẹp .Label này người dùng sẽ không trông thấy cho đến khi bạn kích hoạt gợi ý tìm kiếm cho QuickSearch Box. Tại đó, label này sẽ xuất hiện trong dnah sách những item Searchable trong những thiết lập hệ thống 
+		Còn thuộc tính android:hint là thuộc tính chúng tôi khuyên dùng. Nó sẽ là hint cho từ khóa tìm kiếm 
+////
+TẠO MỘT SEARCHABLE ACTIVITY 
+	bước 1: Khai báo nó trong manifest 
+	Bước 2: Thực hiện một tìm kiếm 
+		1.Nhận truy vấn 
+		2.Tìm kiếm dữ liệu 
+		3.Thể hiện kết quả.

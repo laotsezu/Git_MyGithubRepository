@@ -24,6 +24,7 @@ class Partner extends iBNC{
 			$khach_hang_input["customer_ten"] = $this->r->get_string("customer_ten","POST");
 			$khach_hang_input["customer_sdt"] = $this->r->get_string("customer_sdt","POST");
 			$khach_hang_input["customer_nhom"] = $this->r->get_string("customer_nhom","POST");
+			$khach_hang_input["customer_loai"] = $this->r->get_string("customer_loai","POST");
 			$khach_hang_input["customer_gioi_tinh"] = $this->r->get_string("customer_gioi_tinh","POST");
 			$khach_hang_input["customer_ngay_sinh"] = $this->r->get_string("customer_ngay_sinh","POST");
 			$khach_hang_input["customer_email"] = $this->r->get_string("customer_email","POST");
@@ -32,6 +33,8 @@ class Partner extends iBNC{
 			$khach_hang_input["customer_tong_tien_mua"] = $this->r->get_int("customer_tong_tien_mua","POST");
 			$khach_hang_input["customer_ma_so_thue"] = $this->r->get_string("customer_ma_so_thue","POST");
 			
+			$this->check_empty($khach_hang_input["customer_ten"]);
+
 			$customer = $this->model("ModelPartnerCustomer",$khach_hang_input,"partner");
 
 			$response = $customer->addCustomer();
@@ -48,7 +51,7 @@ class Partner extends iBNC{
 			$nhacc_input["provider_no_nan"] = $this->r->get_string("provider_no_nan","POST");
 			$nhacc_input["provider_ma_so_thue"] = $this->r->get_string("provider_ma_so_thue","POST");
 
-			
+			$this->check_empty($khach_hang_input["provider_ten"]);
 
 			$provider = $this->model("ModelPartnerProvider",$nhacc_input,"partner");
 

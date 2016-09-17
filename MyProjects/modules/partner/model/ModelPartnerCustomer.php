@@ -11,6 +11,7 @@
 			,"customer_ten"
 			,"customer_sdt"
 			,"customer_nhom"
+			,"customer_loai"
 			,"customer_gioi_tinh"
 			,"customer_ngay_sinh"
 			,"customer_email"
