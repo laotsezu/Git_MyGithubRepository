@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <import type="laotsezu.com.kiot.goods.Goods"/>
+        <variable
+            name="goods"
+            type="Goods"/>
+    </data>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/activity_horizontal_small_margin"
+        android:paddingEnd="@dimen/activity_horizontal_small_margin"
+        >
+        <ImageView
+            android:id="@+id/goods_icon"
+            android:layout_width="?android:listPreferredItemHeightLarge"
+            android:layout_height="?android:listPreferredItemHeightLarge"
+            android:contentDescription="@string/app_name"
+            android:loadUrl="@{goods.goods_icon}"
+            android:paddingEnd="@dimen/activity_horizontal_small_margin"
+            />
+        <TextView
+            android:id="@+id/goods_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/goods_icon"
+            android:layout_toStartOf="@+id/goods_price"
+            android:paddingTop="@dimen/activity_horizontal_super_small_margin"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@android:color/black"
+            android:text="@{goods.goods_ten}"
+            />
+        <TextView
+            android:id="@+id/goods_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/goods_icon"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/goods_name"
+            android:paddingBottom="@dimen/activity_horizontal_small_margin"
+
+            android:text="@{goods.goods_loai}"
+            android:textSize="12sp"
+            android:textColor="#42000000"
+            />
+        <TextView
+            android:id="@+id/goods_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="?android:textAppearanceListItem"
+
+            android:paddingTop="@dimen/activity_horizontal_small_margin"
+
+            android:text="@{goods.goods_gia_ban_info}"
+            />
+        <TextView
+            android:id="@+id/goods_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+
+            android:paddingBottom="@dimen/activity_horizontal_small_margin"
+
+            android:text="@{goods.goods_so_luong_info}"
+            android:textSize="12sp"
+            android:textColor="#42000000"
+            />
+    </RelativeLayout>
+</layout>

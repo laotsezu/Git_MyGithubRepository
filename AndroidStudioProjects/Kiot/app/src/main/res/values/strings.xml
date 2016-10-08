@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Kiot</string>
+    <string name="title_activity_personnel_login">PersonnelLoginActivity</string>
+    <string name="search_hint">Từ khóa</string>
+    <string name="edittext_maxlength">18</string>
+
+
+    <string-array name="sex">
+        <item>
+            <string>Nam</string>
+        </item>
+        <item>
+            <string>Nữ</string>
+        </item>
+    </string-array>
+    <string-array name="customer_type">
+        <item>
+            <string>Cá nhân</string>
+        </item>
+        <item>
+            <string>Doanh nghiệp</string>
+        </item>
+    </string-array>
+    <string-array name="customer_group">
+        <item>
+            <string>Thường</string>
+        </item>
+        <item>
+            <string>VIP</string>
+        </item>
+    </string-array>
+    <string name="title_activity_personnel_action">PersonnelActionActivity</string>
+
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+</resources>

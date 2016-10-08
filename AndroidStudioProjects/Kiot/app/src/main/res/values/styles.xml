@@ -1,0 +1,29 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.Lauch" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/window_background</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementExitTransition">
+            @transition/share_element_change_mode
+        </item>
+        <item name="android:windowSharedElementEnterTransition">
+            @transition/share_element_change_mode
+        </item>
+        <item name="android:windowEnterAnimation">@android:transition/explode</item>
+        <item name="android:windowExitAnimation">@android:transition/fade</item>
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+</resources>
