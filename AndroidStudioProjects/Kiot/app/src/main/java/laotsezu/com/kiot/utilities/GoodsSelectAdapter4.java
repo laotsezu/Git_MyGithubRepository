@@ -23,14 +23,14 @@ import laotsezu.com.kiot.resources.MyUtility;
  */
 
 public class GoodsSelectAdapter4 extends RecyclerView.Adapter<GoodsSelectAdapter4.MyViewHolder> {
-    static String TAG = "GoodsSelectAdapter: ";
-    List<Goods> total_list = new LinkedList<>();
-    List<Goods> current_list = new LinkedList<>();
-    GoodsSelectAdapter4.MyFilter myFilter ;
-    int lastItemTranslationY = -1;
-    int itemTranslationYCount = 4;
+    private static String TAG = "GoodsSelectAdapter: ";
+    private List<Goods> total_list = new LinkedList<>();
+    private  List<Goods> current_list = new LinkedList<>();
+    private    GoodsSelectAdapter4.MyFilter myFilter ;
+    private     int lastItemTranslationY = -1;
+    private    int itemTranslationYCount = 4;
 
-    OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener{
         void onItemClick(View view);
@@ -49,6 +49,14 @@ public class GoodsSelectAdapter4 extends RecyclerView.Adapter<GoodsSelectAdapter
         Log.e(TAG,"List size = " + list.size());
     }
 
+    public void addMoreGoodses(List<Goods> more_goods_list){
+        int old_count = total_list.size();
+        for(int i = 0; i < more_goods_list.size(); i++){
+            more_goods_list.get(i).setGoods_so_luong(0);
+        }
+        total_list.addAll(more_goods_list);
+        notifyItemRangeChanged(old_count,getTotalListCount());
+    }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGoods4Binding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.view_goods_4,parent,false);
@@ -106,6 +114,9 @@ public class GoodsSelectAdapter4 extends RecyclerView.Adapter<GoodsSelectAdapter
     @Override
     public int getItemCount() {
         return current_list.size();
+    }
+    public int getTotalListCount(){
+        return total_list.size();
     }
 
     public  class MyViewHolder extends RecyclerView.ViewHolder{

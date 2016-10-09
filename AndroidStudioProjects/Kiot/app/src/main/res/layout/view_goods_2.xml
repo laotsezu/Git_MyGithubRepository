@@ -7,21 +7,21 @@
             type="Goods"/>
     </data>
 
-    <RelativeLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:listPreferredItemHeight"
         android:paddingStart="@dimen/activity_horizontal_small_margin"
         android:paddingEnd="@dimen/activity_horizontal_small_margin"
+        android:orientation="horizontal"
         >
         <TextView
             android:id="@+id/goods_ten_text"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:minWidth="50dp"
-            android:layout_centerVertical="true"
-            android:textAppearance="?android:textAppearanceMedium"
+            android:setWidthForGoodsName="@{goods.GOODS_NAME_MAX_WIDTH}"
+            android:textAppearance="?android:textAppearance"
             android:textColor="@android:color/black"
             android:text="@{goods.goods_ten}"
             android:gravity="center_vertical"
@@ -30,11 +30,10 @@
             android:id="@+id/goods_giam_gia_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal"
-            android:layout_toEndOf="@+id/goods_ten_text"
-            android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_small_margin"
+            android:paddingEnd="@dimen/activity_horizontal_small_margin"
             >
             <TextView
                 android:id="@+id/goods_giam_gia_text"
@@ -52,30 +51,46 @@
                 android:src="@drawable/ic_arrow_downward_black_18dp"
                 />
         </LinearLayout>
-        <TextView
-            android:id="@+id/goods_so_luong_text"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/goods_so_luong_text_container"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/goods_giam_gia_container"
-            android:layout_centerVertical="true"
-            android:paddingStart="@dimen/activity_horizontal_super_small_margin"
-            android:paddingEnd="@dimen/activity_horizontal_super_small_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@drawable/border_darius_background"
-            android:text="@{goods.goods_so_luong_text}"
-            android:transitionName="goods_so_luong"
-            />
+            android:layout_weight="4"
+            android:layout_gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/goods_so_luong_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/activity_horizontal_super_small_margin"
+                android:paddingEnd="@dimen/activity_horizontal_super_small_margin"
+                android:layout_gravity="center"
+                android:background="@drawable/border_darius_background"
+                android:text="@{goods.goods_so_luong_text}"
+                android:transitionName="goods_so_luong"
+                />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/goods_tong_tien_text"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="6"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/goods_so_luong_text"
-            android:layout_centerVertical="true"
-            android:gravity="end"
+            android:paddingEnd="@dimen/activity_horizontal_small_margin"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
             android:textAppearance="?android:textAppearance"
             android:text="@{goods.totalTienPhaiTraInfo}"
             android:transitionName="goods_tong_tien"
             />
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/goods_fixed_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_fix_primary_24dp"
+            />
+    </LinearLayout>
 </layout>

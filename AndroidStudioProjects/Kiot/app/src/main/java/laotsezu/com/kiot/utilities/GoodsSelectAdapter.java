@@ -24,14 +24,14 @@ import laotsezu.com.kiot.resources.MyUtility;
  */
 
 public class GoodsSelectAdapter extends RecyclerView.Adapter<GoodsSelectAdapter.MyViewHolder> {
-    static String TAG = "GoodsSelectAdapter: ";
-    List<Goods> total_list = new LinkedList<>();
-    List<Goods> current_list = new LinkedList<>();
-    GoodsSelectAdapter.MyFilter myFilter ;
-    int lastItemTranslationY = -1;
-    int itemTranslationYCount = 4;
+    private static String TAG = "GoodsSelectAdapter: ";
+    private List<Goods> total_list = new LinkedList<>();
+    private List<Goods> current_list = new LinkedList<>();
+    private GoodsSelectAdapter.MyFilter myFilter ;
+    private int lastItemTranslationY = -1;
+    private int itemTranslationYCount = 4;
 
-    OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener{
         void onItemClick(View view);
@@ -49,7 +49,9 @@ public class GoodsSelectAdapter extends RecyclerView.Adapter<GoodsSelectAdapter.
         this.current_list = list;
         Log.e(TAG,"List size = " + list.size());
     }
-
+    public int getTotalListCount(){
+        return total_list.size();
+    }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGoods3Binding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.view_goods_3,parent,false);

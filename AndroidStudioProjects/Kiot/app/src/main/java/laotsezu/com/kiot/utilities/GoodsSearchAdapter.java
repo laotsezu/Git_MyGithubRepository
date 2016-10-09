@@ -27,8 +27,7 @@ public class GoodsSearchAdapter extends ArrayAdapter {
     List<Goods> total_list = new LinkedList<>();
     List<Goods> current_list = new LinkedList<>();
     MyFilter myFilter ;
-    int lastItemTranslationY = -1;
-    int itemTranslationYCount = 5;
+
     public interface OnCreateCustomArrayAdatperListener{
         void onPublishFilterResult(int count);
     }
@@ -49,6 +48,10 @@ public class GoodsSearchAdapter extends ArrayAdapter {
         Log.e(TAG,"List size = " + list.size());
     }
 
+    public int getTotalListCount(){
+        return total_list.size();
+    }
+
     @Override
     public int getCount() {
         return current_list.size();
@@ -61,18 +64,6 @@ public class GoodsSearchAdapter extends ArrayAdapter {
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
-    }
-    public void startTranslationYAnimation(View convertView){
-
-        ObjectAnimator animator = ObjectAnimator.ofFloat(convertView,"translationY",MyUtility.getScreenHeight(),0);
-
-        animator.setInterpolator(new DecelerateInterpolator());
-
-        animator.setDuration(500);
-
-        animator.start();
-
-
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

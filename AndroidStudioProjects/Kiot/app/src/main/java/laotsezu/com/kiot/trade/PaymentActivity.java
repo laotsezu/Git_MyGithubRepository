@@ -40,6 +40,7 @@ public class PaymentActivity extends AppCompatActivity implements Bill.OnBillPay
     boolean isPaymenting = false;
 
     Toast isPaymentingToast;
+    Toast isDuTienToast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,16 +57,19 @@ public class PaymentActivity extends AppCompatActivity implements Bill.OnBillPay
 
                 String tien_thua_info = String.valueOf(binding.billTienTraKhachText.getText());
                 String tien_da_tra_info = String.valueOf(binding.billTienDaTra.getText());
-               // long tien_thua = bill_tien_can_tra - bill_tien_da_tra;
+                //long tien_thua = bill_tien_can_tra - bill_tien_da_tra;
 
                 if(tien_da_tra_info == null || tien_da_tra_info.length() <= 0 || tien_da_tra_info.equals("0") || tien_thua_info.contains("-")){
                     if(customer_id.equalsIgnoreCase(Customer.getDefaultId())) {
-                        Toast.makeText(this, "Khách chưa trả đủ tiền!", Toast.LENGTH_SHORT).show();
+                        if(isDuTienToast != null)
+                            isDuTienToast.cancel();
+                        isDuTienToast = Toast.makeText(this, "Khách chưa trả đủ tiền!", Toast.LENGTH_SHORT);
+                        isDuTienToast.show();
                         isPaymenting = false;
                     }
                     else {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage("Chấp nhận thanh toán, Trừ tiền nợ vào tài khoản?");
+                        builder.setMessage("Chấp nhận thanh toán, Thanh toán " + tien_thua_info.substring(1,tien_thua_info.length()) + " tiền còn thiếu vào tài khoản?");
                         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -75,7 +79,8 @@ public class PaymentActivity extends AppCompatActivity implements Bill.OnBillPay
                         builder.setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                postPayment(bill_tien_can_tra);
+                                dialog.cancel();
+                                isPaymenting = false;
                             }
                         });
                         builder.setNeutralButton("Quay lại",new DialogInterface.OnClickListener() {
@@ -91,7 +96,7 @@ public class PaymentActivity extends AppCompatActivity implements Bill.OnBillPay
                 else {
                     if(tien_thua_info.length() > 4 && !customer_id.equalsIgnoreCase(Customer.getDefaultId())) {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage("Chấp nhận thanh toán, Cộng tiền thừa vào tài khoản?");
+                        builder.setMessage("Chấp nhận thanh toán, Cộng " + tien_thua_info + " tiền thừa vào tài khoản?");
                         builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

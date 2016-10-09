@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:top="@dimen/activity_horizontal_small_margin"
+        android:right="@dimen/activity_horizontal_small_margin"
+       >
+        <shape>
+            <corners android:radius="1dp"/>
+            <stroke android:color="@android:color/white" android:width="2dp"/>
 
-</selector>
+        </shape>
+    </item>
+    <item
+        android:top="@dimen/activity_horizontal_super_small_margin"
+        android:right="@dimen/activity_horizontal_super_small_margin"
+        android:bottom="@dimen/activity_horizontal_super_small_margin"
+        android:left="@dimen/activity_horizontal_super_small_margin"
+        >
+        <shape>
+            <corners android:radius="1dp"/>
+            <stroke android:color="@android:color/white" android:width="2dp"/>
+            <solid android:color="@color/colorPrimary"/>
+        </shape>
+    </item>
+</layer-list>

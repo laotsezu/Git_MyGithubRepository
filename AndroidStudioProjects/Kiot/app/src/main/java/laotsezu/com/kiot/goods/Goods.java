@@ -1,32 +1,25 @@
 package laotsezu.com.kiot.goods;
 
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.LineBackgroundSpan;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,25 +29,27 @@ import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import laotsezu.com.kiot.resources.CenterLineSpan;
+import laotsezu.com.kiot.resources.MyUtility;
+import laotsezu.com.kiot.utilities.StartAndLimit;
 
 public class Goods extends BaseObservable {
-    String goods_id;
-    String goods_ten;
-    String goods_nhom;
-    String goods_loai;
-    long goods_gia_ban;
-    long goods_gia_von;
-    long goods_so_luong;
-    int goods_giam_gia;
-    String goods_so_luong_info;
-    String goods_don_vi;
-    String goods_icon;
-    int goods_status;
+    static String TAG = "Goods: ";
+    public static int GOODS_NAME_MAX_WIDTH = MyUtility.getScreenWidth() / 4;
+    private String goods_id;
+    private  String goods_ten;
+    private   String goods_nhom;
+    private   String goods_loai;
+    private   long goods_gia_ban;
+    private    long goods_gia_von;
+    private    long goods_so_luong;
+    private    long goods_ton_kho;
+    private    int goods_giam_gia;
+    private   String goods_don_vi;
+    private   String goods_icon;
+    private  int goods_status;
 
     Map<String,String> properties = new HashMap<>();
 
@@ -85,7 +80,6 @@ public class Goods extends BaseObservable {
         goods_don_vi = cursor.getString(8);
         goods_status = cursor.getInt(9);
         goods_icon = cursor.getString(10);
-        goods_so_luong_info = goods_so_luong + " x " + goods_don_vi;
     }
     public Goods(JSONObject input){
         try {
@@ -140,13 +134,14 @@ public class Goods extends BaseObservable {
     public boolean matches(Goods _goods){
         return this.getGoods_id().equalsIgnoreCase(_goods.getGoods_id());
     }
-    public static void loadGoods(String q,OnLoadGoodsListener listener){
+    public static void loadGoods(StartAndLimit startAndLimit,OnLoadGoodsListener listener){
         LoadGoodsAsyncTask task = new LoadGoodsAsyncTask(listener);
-        task.execute(q);
+        task.execute(startAndLimit);
     }
-    private static class LoadGoodsAsyncTask extends AsyncTask<String,Void,JSONObject>{
+    private static class LoadGoodsAsyncTask extends AsyncTask<StartAndLimit,Void,JSONObject>{
         OnLoadGoodsListener listener;
-        String url  = "http://kiot.igarden.vn/repository/duyetkho?limit=24";
+        static String TAG = "LoadGoodsAsyncTask: ";
+        String url  = "http://kiot.igarden.vn/repository/duyetkho";
         public LoadGoodsAsyncTask(OnLoadGoodsListener listener){
             this.listener = listener;
         }
@@ -157,27 +152,36 @@ public class Goods extends BaseObservable {
         }
 
         @Override
-        protected JSONObject doInBackground(String... search_key) {
+        protected JSONObject doInBackground(StartAndLimit... startAndLimits) {
+            String url = this.url;
+            StartAndLimit startAndLimit = startAndLimits[0];
             JSONObject result = new JSONObject();
+
             try {
-                result.put("status",false);
+                result.put("status", false);
 
-                HttpClient httpClient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(url);
-
-                HttpResponse httpResponse = httpClient.execute(httpPost);
-
-                if(httpResponse.getStatusLine().getStatusCode() == 200){
-                    return new JSONObject(new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent())).readLine());
+                if(startAndLimit == null){
+                    result.put("message",TAG  + "Input Invalid, Start and limit = ??");
                 }
-                else{
-                    result.put("message","Http Response Status Line != 200 ");
+                else {
+                    url += "?start=" + startAndLimit.getStart() + "&limit=" + startAndLimit.getLimit();
+
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpPost httpPost = new HttpPost(url);
+
+                    HttpResponse httpResponse = httpClient.execute(httpPost);
+
+                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                        return new JSONObject(new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent())).readLine());
+                    } else {
+                        result.put("message", "Http Response Status Line != 200 ");
+                    }
                 }
 
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 return null;
             }
+
             return result;
         }
 
@@ -208,7 +212,7 @@ public class Goods extends BaseObservable {
     }
     public void printGoods(){
         Log.e("Goods: ","% Giam GIa = " + getGiamGiaPercentInfo());
-        Log.e("Goods: ","Giam Gia = " + String.valueOf(getTotalGiamGia()));
+        Log.e("Goods: ","Giam Gia = " + String.valueOf(getTotalTienGiamGia()));
     }
     public void decreaseAmount(long amount){
         setGoods_so_luong(goods_so_luong - amount);
@@ -314,11 +318,17 @@ public class Goods extends BaseObservable {
     public String getGoods_gia_ban_info() {
         return toVietNameMoneyFormat(goods_gia_ban);
     }
-    public String getGoods_gia_ban_giam_gia_info(){
-        return toVietNameMoneyFormat(goods_gia_ban * (100 - goods_giam_gia) / 100);
+    public long getGoods_tien_giam_gia(){
+        return getGoods_gia_ban() * goods_giam_gia / 100;
     }
-    public static String toVietNameMoneyFormat(float input){
-        if (input < 1000) {
+    public long getGoods_gia_ban_giam_gia(){
+        return goods_gia_ban - getGoods_tien_giam_gia();
+    }
+    public String getGoods_gia_ban_giam_gia_info(){
+        return toVietNameMoneyFormat(getGoods_gia_ban_giam_gia());
+    }
+    public static String toVietNameMoneyFormat(long input){
+        if (Math.abs(input) < 1000) {
             return String.valueOf(input) + "đ";
         }
         try {
@@ -366,20 +376,27 @@ public class Goods extends BaseObservable {
         content.setSpan(new CenterLineSpan(),0,text.length(),0);
         textView.setText(content);
     }
+    @BindingAdapter("android:setWidthForGoodsName")
+    public static void setWidthForGoodsName(View view,int width){
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.width = width;
+        view.setLayoutParams(layoutParams);
+    }
     public boolean hasProperty(String property){
          return properties.containsKey(property);
     }
     public long getTotalTienPhaiTra(){
-        return (long) ((100 - goods_giam_gia) * getTotal_price() / 100);
+        Log.e(TAG,goods_so_luong + " * " + getGoods_gia_ban_giam_gia() + " = " + goods_so_luong * getGoods_gia_ban_giam_gia());
+        return  goods_so_luong * getGoods_gia_ban_giam_gia();
     }
     public String getTotalTienPhaiTraInfo(){
         return toVietNameMoneyFormat(getTotalTienPhaiTra());
     }
     public long getTotal_price(){
-       return getGoods_so_luong() * getGoods_gia_ban();
+       return goods_so_luong * getGoods_gia_ban();
     }
-    public long getTotalGiamGia(){
-        return (long) (getTotal_price() * goods_giam_gia / 100);
+    public long getTotalTienGiamGia(){
+        return  getGoods_tien_giam_gia() * goods_so_luong;
     }
     public String getTotal_price_info() {
         return toVietNameMoneyFormat(getTotal_price());

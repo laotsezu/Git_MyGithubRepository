@@ -2,7 +2,6 @@ package laotsezu.com.kiot.trade;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,20 +11,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,12 +38,14 @@ import laotsezu.com.kiot.partner.Customer;
 import laotsezu.com.kiot.partner.CustomerSelectActivity;
 import laotsezu.com.kiot.personnel.Personnel;
 import laotsezu.com.kiot.personnel.PersonnelLoginActivity;
+import laotsezu.com.kiot.resources.MyAnimatorFactory;
 import laotsezu.com.kiot.resources.MyUtility;
 import laotsezu.com.kiot.utilities.GoodsSelectAdapter4;
 import laotsezu.com.kiot.R;
 import laotsezu.com.kiot.goods.Goods;
 import laotsezu.com.kiot.utilities.GoodsSearchEditText;
 import laotsezu.com.kiot.resources.ResizeAnimation;
+import laotsezu.com.kiot.utilities.StartAndLimit;
 
 public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLoadGoodsListener,Cart.OnCartListener {
     ViewGoodsSelectBinding binding;
@@ -59,6 +54,7 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
     Personnel personnel;
     boolean input_keyboard_visible = false;
     boolean isResetingCart = false;
+    boolean isLoadingMoreGoods = false;
 
     Cart cart;
     String customer_id = Customer.getDefaultId();
@@ -72,10 +68,16 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
     int TOAST_DURATION = 1000;
     Toast onBackPressedToast;
 
+    int moreGoodsJump = 12;
+    Toast noticeToast;
+
+    static int ADAPTER_CHILD_IN_ONE_ROW = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this,R.layout.view_goods_select);
+
+        noticeToast = new Toast(this);
 
         binding.getRoot().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
@@ -96,16 +98,30 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
             Log.e(TAG,"Sdt " + personnel.getPersonnel_sdt());
             Log.e(TAG,"Tong TIen Ban " + personnel.getPersonnel_tong_tien_ban());
 
-            Goods.loadGoods("",GoodsSelectActivity.this);
+            Goods.loadGoods(new StartAndLimit(0,24),GoodsSelectActivity.this);
 
             initLeftDrawer();
         }
         catch (Exception e){
-            Toast.makeText(GoodsSelectActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            noticeToast = Toast.makeText(GoodsSelectActivity.this, e.getMessage(), Toast.LENGTH_SHORT);
+            noticeToast.show();
             finish();
         }
         //
 
+    }
+    public void loadMoreGoods(){
+        if(adapter != null) {
+            synchronized (this) {
+                if(!isLoadingMoreGoods) {
+                    isLoadingMoreGoods = true;
+                    Log.e(TAG,"Start Load More Goods");
+                    StartAndLimit startAndLimit = new StartAndLimit(adapter.getTotalListCount(), adapter.getTotalListCount() + moreGoodsJump);
+                    MyListenerForLoadMoreGoods listener = new MyListenerForLoadMoreGoods(this);
+                    Goods.loadGoods(startAndLimit, listener);
+                }
+            }
+        }
     }
     public void initLeftDrawer(){
 
@@ -135,8 +151,10 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
         if(cart != null && cart.getGoodsCount() != 0) {
             naviToCartBrowseActivity();
         }
-        else{
-            Toast.makeText(GoodsSelectActivity.this, "Cart is empty, add some goods please!", Toast.LENGTH_SHORT).show();
+       else{
+            noticeToast.cancel();
+            noticeToast = Toast.makeText(GoodsSelectActivity.this, "Cart is empty, add some goods please!", Toast.LENGTH_SHORT);
+            noticeToast.show();
         }
     }
 
@@ -153,7 +171,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
                     public void onAnimationStart(Animation animation) {
 
                     }
-
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         animation2.startResize();
@@ -203,7 +220,9 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
     }
     @Override
     public void onPreLoadGoods() {
-        Toast.makeText(GoodsSelectActivity.this, "Loading...", Toast.LENGTH_SHORT).show();
+        noticeToast.cancel();
+        noticeToast = Toast.makeText(GoodsSelectActivity.this, "Loading...", Toast.LENGTH_SHORT);
+        noticeToast.show();
         binding.goodsSelectProgressbar.setVisibility(View.VISIBLE);
     }
     @Override
@@ -214,8 +233,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
 
         binding.goodsSelectProgressbar.setVisibility(View.GONE);
 
-        Log.e(TAG,"Origin Addtion Info Height = " + origin_addtionInfo_size);
-
         List<Goods> list = new LinkedList<>();
         for(int i =0; i < goods_array.length() ; i++){
             try {
@@ -225,17 +242,16 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
                 list.add(goods);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e(TAG,e.getMessage());
             }
         }
 
-        adapter = new GoodsSelectAdapter4(list, new MyListenerForGoodsSelectAdapter());
+        adapter = new GoodsSelectAdapter4(list, new MyListenerForGoodsSelectAdapter(this));
         cart = new Cart();
 
         /////////
         binding.goodsSelectGoodsList.setAdapter(adapter);
-       // binding.goodsSelectGoodsList.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        binding.goodsSelectGoodsList.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
-       // binding.goodsSelectGoodsList.setLayoutManager(new GridLayoutManager(this,3));
+        binding.goodsSelectGoodsList.setLayoutManager(new StaggeredGridLayoutManager(ADAPTER_CHILD_IN_ONE_ROW,StaggeredGridLayoutManager.VERTICAL));
         //////
         binding.goodsSelectSearchText.setOnEditTextListener(new GoodsSearchEditText.OnEditTextListener() {
             @Override
@@ -245,13 +261,8 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
             }
         });
         binding.goodsSelectSearchText.addTextChangedListener(new TextWatcher() {
-            @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
-            }
-            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {adapter.getFilter().filter(s);}
             public void afterTextChanged(Editable s) {}
         });
         binding.goodsSelectSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -259,7 +270,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     showSomeComponent();
-                   // binding.goodsSelectSearchText.setText("");
                 }
                 return false;
             }
@@ -276,16 +286,19 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
                 binding.goodsSelectGoodsListContainer.setRefreshing(false);
             }
         });
+        binding.goodsSelectGoodsList.addOnScrollListener(new MyListenerForRecyclerViewToBottom(this));
     }
     @Override
     public void onLoadGoodsFailed(String message) {
-        Toast.makeText(GoodsSelectActivity.this, "Load Goods Failed : " + message, Toast.LENGTH_SHORT).show();
+        noticeToast.cancel();
+        noticeToast = Toast.makeText(GoodsSelectActivity.this, "Load Goods Failed : " + message, Toast.LENGTH_SHORT);
+        noticeToast.show();
         binding.goodsSelectProgressbar.setVisibility(View.GONE);
         binding.goodsSelectLoadfailedContainer.setVisibility(View.VISIBLE);
     }
     public void onRetryButtonClick(View v){
         binding.goodsSelectLoadfailedContainer.setVisibility(View.GONE);
-        Goods.loadGoods("",this);
+        Goods.loadGoods(new StartAndLimit(0,24),this);
     }
 
     @Override
@@ -421,11 +434,87 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
     public void onCleanCartButtonClick(View view){
         resetGoodses();
     }
-    private class MyListenerForGoodsSelectAdapter implements GoodsSelectAdapter4.OnItemClickListener {
+    private static class MyListenerForLoadMoreGoods implements Goods.OnLoadGoodsListener{
+        WeakReference<GoodsSelectActivity> weakReference;
+        public MyListenerForLoadMoreGoods(GoodsSelectActivity activity){
+            weakReference = new WeakReference<>(activity);
+        }
+        @Override
+        public void onPreLoadGoods() {
+            final GoodsSelectActivity activity = weakReference.get();
+
+            activity.noticeToast.cancel();
+            activity.noticeToast = Toast.makeText(activity, "On Preload More GOodses!", Toast.LENGTH_LONG);
+            activity.noticeToast.show();
+
+            //MyAnimatorFactory.visibleProgressbarLoadMore(activity.binding);
+        }
+
+        @Override
+        public void onLoadGoodsSucessful(JSONArray goods_array) {
+            List<Goods> more_goods_list = new LinkedList<>();
+            for(int i = 0 ; i < goods_array.length() ; i++){
+                try {
+                    JSONObject goods_data = goods_array.getJSONObject(i);
+                    Goods goods = new Goods(goods_data);
+                    more_goods_list.add(goods);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e(TAG,e.getMessage());
+                }
+            }
+
+            GoodsSelectActivity activity = weakReference.get();
+            activity.adapter.addMoreGoodses(more_goods_list);
+            activity.isLoadingMoreGoods = false;
+
+           // MyAnimatorFactory.goneProgressbarLoadMore(activity.binding);
+        }
+
+        @Override
+        public void onLoadGoodsFailed(String message) {
+            Log.e(TAG,message);
+
+            GoodsSelectActivity activity = weakReference.get();
+
+          //  activity.isLoadingMoreGoods = false;
+
+            activity.noticeToast.cancel();
+            activity.noticeToast = Toast.makeText(activity,message,Toast.LENGTH_LONG);
+            activity.noticeToast.show();
+        }
+    }
+    private static class MyListenerForRecyclerViewToBottom extends RecyclerView.OnScrollListener{
+        WeakReference<GoodsSelectActivity> weakReference;
+        public MyListenerForRecyclerViewToBottom(GoodsSelectActivity activity){
+            weakReference = new WeakReference<>(activity);
+        }
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+            int visibleChildCount = manager.getChildCount();
+            int totalChildCount = manager.getItemCount();
+            int wasVisibleChildCount = manager.findFirstVisibleItemPositions(null)[0];
+
+            if(visibleChildCount + wasVisibleChildCount + 2 * ADAPTER_CHILD_IN_ONE_ROW >= totalChildCount){
+                weakReference.get().loadMoreGoods();
+            }
+
+        }
+    }
+    private static class MyListenerForGoodsSelectAdapter implements GoodsSelectAdapter4.OnItemClickListener {
+        WeakReference<GoodsSelectActivity> weakReference;
+        MyListenerForGoodsSelectAdapter(GoodsSelectActivity activity){
+            weakReference = new WeakReference<>(activity);
+        }
         @Override
         public void onItemClick(View view) {
-           // ViewGoodsSelectBinding binding = weakBinding.get();
-           // Cart cart = weakCart.get();
+            GoodsSelectActivity activity = weakReference.get();
+            Cart cart = activity.cart;
+            ViewGoodsSelectBinding binding = activity.binding;
+
             ViewGoods4Binding _binding = DataBindingUtil.getBinding(view);
             Goods goods = _binding.getGoods();
             cart.increaseGoods(goods,1);
@@ -436,6 +525,10 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
 
         @Override
         public void letRemoveGoodsFromCart(View view) {
+            GoodsSelectActivity activity = weakReference.get();
+            Cart cart = activity.cart;
+            ViewGoodsSelectBinding binding = activity.binding;
+
             ViewGoods4Binding _binding = DataBindingUtil.getBinding(view);
             Goods goods = _binding.getGoods();
             cart.setGoodsesAmount(goods.getGoods_id(),0);
@@ -446,8 +539,10 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
 
         @Override
         public void onSubtractIconClick(View view) {
-           // ViewGoodsSelectBinding binding = weakBinding.get();
-          //  Cart cart = weakCart.get();
+            GoodsSelectActivity activity = weakReference.get();
+            Cart cart = activity.cart;
+            ViewGoodsSelectBinding binding = activity.binding;
+
             ViewGoods4Binding _binding = DataBindingUtil.getBinding(view);
             Goods goods = _binding.getGoods();
             cart.decreaseGoods(goods,1);
@@ -458,60 +553,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
         }
     }
     public void startCoolAnimation(){
-        int cx = MyUtility.getScreenWidth() /2;
-        int cy = MyUtility.getScreenHeight() - binding.goodsSelectDinhIcon.getHeight();
-        float radius = (float) Math.hypot(cx,cy);
-
-        binding.goodsSelectRingIcon.setPivotY(binding.goodsSelectRingIcon.getHeight());
-
-        final Animator last_animator = ViewAnimationUtils.createCircularReveal(binding.getRoot(),cx,cy,0,radius).setDuration(500);
-        last_animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                binding.goodsSelectRingIcon.setVisibility(View.GONE);
-                binding.goodsSelectDinhIcon.setVisibility(View.GONE);
-                binding.goodsSelectBody.setVisibility(View.VISIBLE);
-                binding.goodsSelectAppbar.setVisibility(View.VISIBLE);
-            }
-
-        });
-        float height = MyUtility.getScreenHeight() - binding.goodsSelectRingIcon.getBottom();
-        float sai_so = binding.goodsSelectRingIcon.getHeight() / 4  * 1.11f;
-
-        Animator first_animator1 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"translationY",0,-200).setDuration(400);
-        Animator first_animator2 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"translationY",-200,height - sai_so).setDuration(400);
-        Animator first_animator31 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"scaleX",1,2,1).setDuration(400);
-        final Animator first_animator32 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"scaleY",1,0.5f,1).setDuration(400);
-        Animator first_animator4 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"translationY",height - sai_so,height - 400).setDuration(400);
-        Animator first_animator5 = ObjectAnimator.ofFloat(binding.goodsSelectRingIcon,"translationY",height - 400,height - binding.goodsSelectDinhIcon.getHeight()).setDuration(600);
-
-        first_animator1.setInterpolator(new DecelerateInterpolator());
-        first_animator2.setInterpolator(new AccelerateInterpolator());
-        first_animator31.setInterpolator(new AccelerateDecelerateInterpolator());
-        first_animator32.setInterpolator(new AccelerateDecelerateInterpolator());
-        first_animator4.setInterpolator(new AccelerateDecelerateInterpolator());
-        first_animator5.setInterpolator(new DecelerateInterpolator());
-
-        first_animator31.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                first_animator32.start();
-            }
-        });
-
-        first_animator4.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                binding.goodsSelectDinhIcon.setVisibility(View.VISIBLE);
-            }
-        });
-
-        AnimatorSet first_animatorSet = new AnimatorSet();
-        first_animatorSet.playSequentially(first_animator1,first_animator2,first_animator31/*,first_animator32*/,first_animator4,first_animator5,last_animator);
-
-        first_animatorSet.start();
+        MyAnimatorFactory.startCoolAnimationForGoodsSelectActivity(binding);
     }
 }

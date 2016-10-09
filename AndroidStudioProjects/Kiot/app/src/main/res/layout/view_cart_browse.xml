@@ -31,7 +31,7 @@
                         android:id="@+id/cart_back_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingEnd="@dimen/activity_horizontal_margin"
+                        android:paddingEnd="@dimen/activity_horizontal_normal_margin"
                         android:contentDescription="@string/app_name"
                         android:src="@drawable/ic_arrow_back_white_24dp"
                         android:onClick="onBackButtonClick"
@@ -120,8 +120,8 @@
                 android:background="#10000000"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="@dimen/activity_horizontal_margin"
-                android:paddingEnd="@dimen/activity_horizontal_margin"
+                android:paddingStart="@dimen/activity_horizontal_normal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_normal_margin"
                 android:transitionName="totalPrice"
                 >
                 <TextView

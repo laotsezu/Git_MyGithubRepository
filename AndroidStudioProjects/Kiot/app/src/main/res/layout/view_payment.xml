@@ -32,7 +32,7 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_arrow_back_white_24dp"
                     android:contentDescription="@string/app_name"
-                    android:paddingEnd="@dimen/activity_horizontal_margin"
+                    android:paddingEnd="@dimen/activity_horizontal_normal_margin"
                     android:onClick="onBackButtonClick"
                     />
                 <TextView
@@ -60,8 +60,8 @@
             android:orientation="vertical"
             android:layout_alignParentTop="true"
             android:layout_above="@+id/payment_complete_button_container"
-            android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_normal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_normal_margin"
             >
             <LinearLayout
                 android:layout_width="match_parent"

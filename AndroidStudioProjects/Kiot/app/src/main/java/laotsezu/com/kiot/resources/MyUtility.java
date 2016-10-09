@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Set;
 import java.util.Vector;
@@ -95,5 +96,11 @@ public class MyUtility {
         animator.setInterpolator(new DecelerateInterpolator());
         animator.setDuration(400);
         animator.start();
+    }
+    public static void showToast(Toast toast,String message){
+        if(toast != null) {
+            toast.cancel();
+            toast = Toast.makeText(toast.getView().getContext(),message,Toast.LENGTH_LONG);
+        }
     }
 }

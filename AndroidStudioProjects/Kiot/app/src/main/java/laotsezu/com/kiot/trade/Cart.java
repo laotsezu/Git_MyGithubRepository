@@ -1,18 +1,13 @@
 package laotsezu.com.kiot.trade;
 
 import android.databinding.BaseObservable;
-import android.databinding.BindingAdapter;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import laotsezu.com.kiot.goods.Goods;
-import laotsezu.com.kiot.resources.MyUtility;
 
 /**
  * Created by Laotsezu on 9/18/2016.
@@ -57,14 +52,12 @@ public class Cart extends BaseObservable{
         throw new Exception("Goods is not exist in Cart!");
     }
     private void addGoods(Goods _goods){
-        _goods.addPropertiy("goods_max_so_luong",String.valueOf(_goods.getGoods_so_luong()));
-        _goods.setGoods_so_luong(0);
         goodses.add(_goods);
         if(listener != null){
             listener.onCartGoodsChange(goodses.size());
         }
     }
-    void removeGoods(Goods _goods){
+    private  void removeGoods(Goods _goods){
         try {
             int position = getGoodsPosition(_goods);
             goodses.remove(position);
@@ -203,11 +196,11 @@ public class Cart extends BaseObservable{
 
         return result.substring(0,result.length() - 1);
     }
-    public long getTotalGiamGia(){
+    public long getTotalTienGiamGia(){
         long sum = 0;
         for(int i = 0; i < goodses.size(); i++){
             Goods goods = goodses.get(i);
-            sum += goods.getTotalGiamGia();
+            sum += goods.getTotalTienGiamGia();
         }
         return sum;
     }
@@ -223,8 +216,8 @@ public class Cart extends BaseObservable{
     public String getTotalTienPhaiTraInfo(){
         return Goods.toVietNameMoneyFormat(getTotalTienPhaiTra());
     }
-    public String getTotalGiamGiaInfo(){
-        return Goods.toVietNameMoneyFormat(getTotalGiamGia());
+    public String getTotalTienGiamGiaInfo(){
+        return Goods.toVietNameMoneyFormat(getTotalTienGiamGia());
     }
     public void updateGoodsSoLuong(Bundle data){
         if (data != null) {

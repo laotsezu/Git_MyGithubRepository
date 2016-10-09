@@ -24,10 +24,15 @@ public class GoodsFixedActivity extends AppCompatActivity {
     Goods goods;
     int total_price_max_size = 15;
     Intent result = new Intent();
+
+
+    Toast mToast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this,R.layout.view_goods_fixed);
+
+        mToast = new Toast(this);
 
         if(getIntentData()){
             init();
@@ -42,6 +47,7 @@ public class GoodsFixedActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s == null || s.length() <= 0){
                     goods.setGoods_so_luong(0);
+                    binding.goodsFixedTongTien.setText(Goods.toVietNameMoneyFormat(0));
                 }
                 else if(String.valueOf(s).contains("-")){
                     String old_count = String.valueOf(goods.getGoods_so_luong());
@@ -54,7 +60,7 @@ public class GoodsFixedActivity extends AppCompatActivity {
                         if(new_tong_tien.length() > total_price_max_size){
                             binding.goodsFixedSoLuong.setText(goods.getGoods_so_luong_text());
                             binding.goodsFixedSoLuong.setSelection(goods.getGoods_so_luong_text().length());
-                            Toast.makeText(GoodsFixedActivity.this, "Số lượng quá nhiều", Toast.LENGTH_SHORT).show();
+                            MyUtility.showToast(mToast,"Số lượng quá nhiều");
                         }
                         else {
                             goods.setGoods_so_luong(Long.parseLong(String.valueOf(s)));
@@ -77,36 +83,6 @@ public class GoodsFixedActivity extends AppCompatActivity {
                 return false;
             }
         });
-        /////
-       /* binding.goodsFixedGiamGia.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s == null || s.length() <= 0){
-                    goods.setGoods_giam_gia(0);
-                }
-                else if(String.valueOf(s).contains("-")){
-                    binding.goodsFixedSoLuong.setText(goods.getGoods_so_luong_text());
-                    binding.goodsFixedSoLuong.setSelection(goods.getGoods_so_luong_text().length());
-                    Toast.makeText(GoodsFixedActivity.this, "Giảm giá < 100%", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    goods.setGoods_giam_gia(Integer.parseInt(String.valueOf(s)));
-                    result.putExtra("goods_giam_gia",goods.getGoods_giam_gia());
-                    binding.goodsFixedTongTien.setText(goods.getTotalTienPhaiTraInfo());
-                }
-            }
-            @Override public void afterTextChanged(Editable s) {}
-        });
-        binding.goodsFixedGiamGia.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
-                    if(goods.getGoods_so_luong() == 0)
-                        binding.goodsFixedGiamGia.setText("0");
-                }
-                return false;
-            }
-        });*/
     }
     public boolean getIntentData(){
         Bundle data;

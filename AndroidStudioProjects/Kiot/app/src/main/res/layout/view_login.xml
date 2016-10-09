@@ -50,7 +50,7 @@
                 android:id="@+id/login_booth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_margin="@dimen/activity_horizontal_normal_margin"
                 android:minHeight="?android:listPreferredItemHeight"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:listPreferredItemHeight"
                 android:layout_below="@+id/login_booth"
-                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_margin="@dimen/activity_horizontal_normal_margin"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 >
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:listPreferredItemHeight"
                 android:layout_below="@+id/login_account"
-                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_margin="@dimen/activity_horizontal_normal_margin"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 >
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?android:listPreferredItemHeight"
                 android:layout_below="@+id/login_password"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:contentDescription="@string/app_name"
                 android:layout_centerHorizontal="true"
                 android:background="@android:color/holo_green_light"
@@ -147,13 +147,13 @@
                 android:minHeight="?android:listPreferredItemHeight"
                 android:layout_toEndOf="@+id/login_login_button"
                 android:layout_below="@+id/login_password"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 >
                 <android.widget.ProgressBar
                     android:visibility="invisible"
                     android:id="@+id/login_login_progressbar"
-                    android:layout_width="@dimen/activity_horizontal_margin"
-                    android:layout_height="@dimen/activity_horizontal_margin"
+                    android:layout_width="@dimen/activity_horizontal_normal_margin"
+                    android:layout_height="@dimen/activity_horizontal_normal_margin"
                     android:layout_centerVertical="true"
                     style="?android:progressBarStyleSmall"
                     />

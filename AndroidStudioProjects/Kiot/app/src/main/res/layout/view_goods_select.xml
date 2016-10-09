@@ -42,7 +42,7 @@
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_reorder_white_24dp"
                             android:contentDescription="@string/app_name"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"
+                            android:paddingEnd="@dimen/activity_horizontal_normal_margin"
                             android:onClick="onHomeButtonOnClick"
                             />
                         <TextView
@@ -70,8 +70,8 @@
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_add_white_24dp"
                             android:contentDescription="@string/app_name"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"
-                            android:paddingStart="@dimen/activity_horizontal_margin"
+                            android:paddingEnd="@dimen/activity_horizontal_normal_margin"
+                            android:paddingStart="@dimen/activity_horizontal_normal_margin"
                             />
                     </LinearLayout>
                 </android.support.v7.widget.Toolbar>
@@ -164,42 +164,30 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="?android:attr/selectableItemBackground"
-                            android:paddingStart="@dimen/activity_horizontal_margin"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"
-                            android:gravity="center_vertical"
+                            android:layout_marginStart="@dimen/activity_horizontal_super_small_margin"
+                            android:layout_marginEnd="@dimen/activity_horizontal_super_small_margin"
+                            android:paddingEnd="@dimen/activity_horizontal_small_margin"
                             >
-                            <RelativeLayout
+                            <TextView
+                                android:id="@+id/goods_select_total_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:minHeight="?android:listPreferredItemHeight"
-                                >
-                                <ImageView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:contentDescription="@string/app_name"
-                                    android:src="@drawable/ic_filter_none_white_48dp"
-                                    android:layout_centerInParent="true"
+                                android:background="@drawable/goods_count_background"
+                                android:padding="@dimen/activity_horizontal_medium_margin"
+                                android:layout_margin="@dimen/activity_horizontal_small_margin"
+                                android:layout_marginBottom="@dimen/activity_horizontal_medium_margin"
+                                android:textColor="@android:color/white"
+                                android:textStyle="bold"
+                                android:textAppearance="?android:textAppearanceLarge"
+                                android:text="0"
                                     />
-                                <TextView
-                                    android:id="@+id/goods_select_total_count"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:paddingStart="@dimen/activity_horizontal_small_margin"
-                                    android:paddingBottom="@dimen/activity_horizontal_small_margin"
-                                    android:textColor="@android:color/white"
-                                    android:textStyle="bold"
-                                    android:textSize="@dimen/goods_select_total_count_text_size"
-                                    android:text="0"
-                                    />
-                            </RelativeLayout>
                             <TextView
                                 android:id="@+id/goods_select_total_price"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="end"
+                                android:layout_gravity="center_vertical"
                                 android:textSize="@dimen/price_size"
                                 android:textColor="@android:color/white"
                                 android:text="0đ"
@@ -229,7 +217,7 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_search_black_24dp"
                             android:contentDescription="@string/app_name"
-                            android:layout_marginStart="@dimen/activity_horizontal_margin"
+                            android:layout_marginStart="@dimen/activity_horizontal_normal_margin"
                             android:paddingEnd="@dimen/activity_horizontal_small_margin"
                             />
                         <laotsezu.com.kiot.utilities.GoodsSearchEditText
@@ -247,7 +235,7 @@
                             android:id="@+id/goods_select_scan_icon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                            android:layout_marginEnd="@dimen/activity_horizontal_normal_margin"
                             android:src="@drawable/ic_clear_cart_24dp"
                             android:background="?android:selectableItemBackgroundBorderless"
                             android:contentDescription="@string/app_name"
@@ -271,13 +259,21 @@
                             android:id="@+id/goods_select_goods_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/activity_horizontal_super_small_margin"
-                            android:paddingBottom="@dimen/activity_horizontal_super_small_margin"
                             android:scrollbars="none"
                             android:background="@color/super_light_gray"
                             >
                         </android.support.v7.widget.RecyclerView>
                     </android.support.v4.widget.SwipeRefreshLayout>
+                    <ProgressBar
+                        android:visibility="invisible"
+                        android:id="@+id/goods_select_loadmore_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="?android:attr/actionBarSize"
+                        android:layout_below="@id/goods_select_goods_list_container"
+                        android:layout_centerInParent="true"
+                        android:padding="@dimen/activity_horizontal_super_small_margin"
+                        style="?android:progressBarStyleSmall"
+                        />
                     <ProgressBar
                         android:id="@+id/goods_select_progressbar"
                         android:layout_width="wrap_content"
@@ -342,7 +338,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_above="@+id/left_drawer_personnelinfo_ten"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_normal_margin"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/personnel_avatar"
                     />
@@ -352,7 +348,7 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/left_drawer_personnelinfo_diachi"
                     android:textAppearance="?android:textAppearanceMedium"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingStart="@dimen/activity_horizontal_normal_margin"
                     android:text="@{personnel.personnel_ten_info}"
                     android:textColor="@android:color/white"
                     />
@@ -362,7 +358,7 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/left_drawer_personnelinfo_dangxuat"
                     android:textAppearance="?android:textAppearance"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingStart="@dimen/activity_horizontal_normal_margin"
                     android:textColor="@android:color/white"
                     android:text="@{personnel.personnel_sdt_info}"
                     />
@@ -372,7 +368,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:textAppearance="?android:textAppearance"
-                    android:paddingStart="@dimen/activity_horizontal_margin"
+                    android:paddingStart="@dimen/activity_horizontal_normal_margin"
                     android:layout_marginBottom="@dimen/activity_horizontal_small_margin"
                     android:clickable="true"
                     android:textColor="@android:color/white"
@@ -385,7 +381,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:background="@drawable/ripped_with_orangecolor"
                 android:clickable="true"
                 android:onClick="naviToPersonnelInfoActivity"
@@ -414,7 +410,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:background="@drawable/ripped_with_orangecolor"
                 android:clickable="true"
                 android:onClick="naviToSelectCustomerActivity"
@@ -443,7 +439,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:background="@drawable/ripped_with_orangecolor"
                 android:clickable="true"
                 android:onClick="naviToCartBrowseActivity"
@@ -472,7 +468,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:background="@drawable/ripped_with_orangecolor"
                 android:clickable="true"
                 android:onClick="naviToReturnGoodsActivity"
@@ -501,7 +497,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:padding="@dimen/activity_horizontal_normal_margin"
                 android:background="@drawable/ripped_with_orangecolor"
                 android:clickable="true"
                 android:onClick="naviToSettingsActivity"

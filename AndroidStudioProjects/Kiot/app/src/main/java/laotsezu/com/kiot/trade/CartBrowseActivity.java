@@ -91,7 +91,7 @@ public class CartBrowseActivity extends AppCompatActivity {
             intent.putExtra("personnel_id", getSharedPreferences(MyUtility.SHAREPREFERENCE_ID, MODE_PRIVATE).getString("personnel_id", "0"));
             intent.putExtra("current_goods_ids", cart.getCurrentGoodsIds());
             intent.putExtra("bill_tong_tien_hang", cart.getTotalPrice());
-            intent.putExtra("bill_giam_gia", cart.getTotalGiamGia());
+            intent.putExtra("bill_giam_gia", cart.getTotalTienGiamGia());
 
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

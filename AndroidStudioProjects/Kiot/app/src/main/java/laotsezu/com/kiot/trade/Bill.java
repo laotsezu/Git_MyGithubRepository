@@ -1,6 +1,7 @@
 package laotsezu.com.kiot.trade;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -100,7 +101,8 @@ public class Bill {
 
                 if(httpResponse.getStatusLine().getStatusCode() == 200) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-                    String line = br.readLine();
+                    String line;
+                            line = br.readLine();
 
                     JSONObject response = new JSONObject(line);
                     boolean status = response.getBoolean("status");
