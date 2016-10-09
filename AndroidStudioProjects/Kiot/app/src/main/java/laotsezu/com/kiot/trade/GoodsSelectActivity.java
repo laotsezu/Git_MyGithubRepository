@@ -58,6 +58,7 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
     static String TAG = "GoodsSelectActivity: ";
     Personnel personnel;
     boolean input_keyboard_visible = false;
+    boolean isResetingCart = false;
 
     Cart cart;
     String customer_id = Customer.getDefaultId();
@@ -326,36 +327,42 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
         }
     }
     public void resetGoodses(){
-        final long current_total_count = cart.getGoodsCount();
-        final long current_total_prince = cart.getTotalPrice();
+        synchronized (this){
+            if(!isResetingCart){
+                isResetingCart = true;
+                final long current_total_count = cart.getGoodsCount();
+                final long current_total_prince = cart.getTotalTienPhaiTra();
 
-        Log.e(TAG,"Current Count = " + current_total_count + "Current Price = " + current_total_prince);
+                Log.e(TAG,"Current Count = " + current_total_count + "Current Price = " + current_total_prince);
 
-        Log.e(TAG,"Start Reset Goodses");
-        cart.clearCart();
-        adapter.resetAmountOfGoods();
+                Log.e(TAG,"Start Reset Goodses");
+                cart.clearCart();
+                adapter.resetAmountOfGoods();
 
-        final Handler handler = new Handler();
+                final Handler handler = new Handler();
 
-        handler.post(new Runnable() {
-            int i = 10;
-            @Override
-            public void run() {
-                i--;
-                if(i >= 0) {
-                    String count = String.valueOf(current_total_count * i / 10);
-                    binding.goodsSelectTotalCount.setText(count);
-                    binding.goodsSelectTotalPrice.setText(Goods.toVietNameMoneyFormat((long)(current_total_prince * i / 10)));
-                    handler.post(this);
-                }
+                handler.post(new Runnable() {
+                    int i = 10;
+                    @Override
+                    public void run() {
+                        i--;
+                        if(i >= 0) {
+                            String count = String.valueOf(current_total_count * i / 10);
+                            binding.goodsSelectTotalCount.setText(count);
+                            binding.goodsSelectTotalPrice.setText(Goods.toVietNameMoneyFormat((long)(current_total_prince * i / 10)));
+                            handler.post(this);
+                        }
+                        else{
+                            isResetingCart = false;
+                        }
+                    }
+                });
+
+                Toast.makeText(this, "Xóa thành công dữ liệu giỏ hàng!", Toast.LENGTH_SHORT).show();
             }
-        });
-
-        Toast.makeText(this, "Xóa thành công dữ liệu giỏ hàng!", Toast.LENGTH_SHORT).show();
-
+        }
     }
     public void naviToCartBrowseActivity(){
-        binding.goodsSelectAdditionalInfo.setAlpha(0.5f);
         Intent intent = new Intent(this,CartBrowseActivity.class);
         cart.browseCart();
         intent.putExtra("items",cart.getBundle());
@@ -372,8 +379,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
         startActivityForResult(intent,TO_CART_BROWSE,options.toBundle());
     }
     public void naviToCartBrowseActivity(View v){
-
-        binding.goodsSelectAdditionalInfo.setAlpha(0.5f);
         Intent intent = new Intent(this,CartBrowseActivity.class);
         cart.browseCart();
         intent.putExtra("items",cart.getBundle());
@@ -384,7 +389,6 @@ public class GoodsSelectActivity extends AppCompatActivity implements Goods.OnLo
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         startActivityForResult(intent,TO_CART_BROWSE);
-
     }
 
     public void naviToSelectCustomerActivity(View v){
